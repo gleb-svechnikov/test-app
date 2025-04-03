@@ -1,6 +1,14 @@
 <script setup lang="ts">
 import IconLogo from '@/components/icons/IconLogo.vue';
+import IconCart from '@/components/icons/iconCart.vue';
 import { RouterLink, RouterView } from 'vue-router'
+
+import { EcwidService } from '@/services/EcwidService';
+import type { CartItem } from "@/types";
+import { ref } from 'vue';
+const cart = ref<CartItem[]>([]);
+cart.value = EcwidService.getStoredCart();
+  
 </script>
 
 <template>
@@ -9,8 +17,10 @@ import { RouterLink, RouterView } from 'vue-router'
       <IconLogo/>
     </RouterLink>
     <nav>
-      <RouterLink to="/">Products and categories list</RouterLink>
-      <RouterLink to="/cart">Shopping Cart</RouterLink>
+      <RouterLink to="/">Products and categories</RouterLink>
+      <RouterLink to="/cart">
+        <IconCart /> Shopping Cart <sup v-if="cart.length > 0">{{cart.length}}</sup>
+      </RouterLink>
     </nav>
   </header>
   <main>
@@ -20,10 +30,12 @@ import { RouterLink, RouterView } from 'vue-router'
 
 <style scoped>
 
+
 header {
   height: 5rem;
   display: flex;
   gap: 2rem;
+  width: 100%;
   justify-content: space-between;
   a{
     padding: 1rem;
@@ -34,10 +46,17 @@ header {
     margin-top: 2rem;
     display: flex;
     gap: 1rem;
-    a {
-      display: inline-block;
-      padding: 0 1rem;
-      border-left: 1px solid var(--color-border);
+    a{
+      text-underline-position: under;
+      sup{
+        width: 2rem;
+        height: 2rem;
+        line-height: 1rem;
+        border-radius: 50%;
+        padding: 0rem;
+        font-size: 1rem;
+        text-align: center;
+      }
       &.router-link-exact-active {
         color: var(--color-text);
         &:hover {
@@ -47,5 +66,16 @@ header {
     }
   }
 }
-
+main{
+  display: flex;
+  width: 100%;
+}
+@media (width < 600px) {
+  main{
+    flex-direction: column;
+  }
+  nav {
+    flex-direction: column;
+  }
+}
 </style>

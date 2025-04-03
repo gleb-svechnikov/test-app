@@ -1,52 +1,59 @@
 <template>
-    <div v-if="category && !loading" class="category-view">
-        <div class="category-header">
-            <h1>{{ category.name }}</h1>
-            <div v-if="category.description" v-html="category.description"></div>
-            <img v-if="category.imageUrl" :src="category.imageUrl" :alt="category.name" />
+    <section>
+        <div class="categories"  v-if="category && !loading">
+          <h2>Categories</h2>
+          <ul>
+            <li v-for="category in categories" :key="category.id">
+              <RouterLink :to="`/categories/${category.id}`">
+                <CategoryCard :category="category"/>
+              </RouterLink>
+            </li>
+          </ul>
         </div>
-
-        <div class="products-section">
-            <h2>Products</h2>
-            <ul class="products-list">
-                <li v-for="product in products" :key="product.id">
-                    <RouterLink :to="`/items/${product.id}`">
-                        <ProductCard :product="product" @add-to-cart="addToCart" />
-                    </RouterLink>
-                </li>
-            </ul>
+        <div v-else-if="loading">
+            <progress></progress>
         </div>
-    </div>
-
-    <div v-else-if="loading">
-        <progress></progress>
-    </div>
-    <div v-else>
-        Category not found
-    </div>
+        <div v-else>
+            Category not found
+        </div>
+      </section>
+      <section>
+        <div class="products" v-if="category && !loading">
+          <h2>Products from {{ category.name }}</h2>
+          <ul class="products-list">
+            <li v-for="product in products" :key="product.id">
+              <RouterLink :to="`/items/${product.id}`">
+                <ProductCard :product="product" @add-to-cart="addToCart" />
+              </RouterLink>
+            </li>
+          </ul>
+        </div>
+      </section>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { EcwidService } from '@/services/EcwidService';
 import type { Category, Product } from "@/types";
 import ProductCard from '@/components/ProductCard.vue';
-
+import CategoryCard from '@/components/CategoryCard.vue';
+const categories = ref<Category[]>([]);
 const route = useRoute();
 const category = ref<Category | null>(null);
 const products = ref<Product[]>([]);
 const loading = ref(true);
 const error = ref<Error | null>(null);
-
 const fetchCategoryData = async () => {
     try {
         const categoryId = Number(route.params.id);
-        const [categoryData, productsData] = await Promise.all([
+        const [categoriesData, categoryData, productsData] = await Promise.all([
+            EcwidService.getCategories(),
             EcwidService.getCategory(categoryId),
             EcwidService.getProducts(categoryId)
         ]);
-
+        
+        categories.value = categoriesData;
         category.value = categoryData;
         products.value = productsData;
     } catch (e) {
@@ -55,6 +62,11 @@ const fetchCategoryData = async () => {
         loading.value = false;
     }
 };
+
+watch(() => route.params.id, () => {
+    loading.value = true;
+    fetchCategoryData();
+});
 
 const addToCart = async (product: Product) => {
     await EcwidService.addToCart(product.id);

@@ -6,11 +6,7 @@
       <div class="cart-items">
         <ul>
           <li v-for="item in cart" :key="item.id" class="cart-item">
-            <!-- Product Image -->
-            <img 
-              :src="item.product.imageUrl" 
-              :alt="item.product.name"
-            />
+            <img :src="item.product.imageUrl" :alt="item.product.name" loading="lazy" />
 
             <div class="item-details">
               <h3>{{ item.product.name }}</h3>
@@ -27,10 +23,7 @@
               ${{ (item.product.price * item.quantity).toFixed(2) }}
             </div>
 
-            <button 
-              @click="removeFromCart(item.id)"
-              class="remove-button"
-            >
+            <button @click="removeFromCart(item.id)" class="remove-button">
               Remove
             </button>
           </li>
@@ -42,10 +35,7 @@
           <span>Total:</span>
           <span>${{ cartTotal.toFixed(2) }}</span>
         </div>
-        <button 
-          @click="placeOrder"
-          class="order-button"
-        >
+        <button @click="placeOrder" class="order-button">
           Place Order
         </button>
       </div>
@@ -56,26 +46,23 @@
       <router-link to="/">Continue Shopping</router-link>
     </div>
 
-    <div v-if="showOrderSuccess" class="modal-overlay">
+    <dialog open v-if="showOrderSuccess" class="modal-overlay">
       <div class="modal">
         <h2>Order Placed Successfully!</h2>
         <p>Thank you for your purchase.</p>
-        <button 
-          @click="closeOrderSuccess"
-          class="continue-button"
-        >
+        <button @click="closeOrderSuccess" class="continue-button">
           Continue Shopping
         </button>
       </div>
-    </div>
+    </dialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { EcwidService, type CartItem } from '@/services/EcwidService';
-
+import { EcwidService } from '@/services/EcwidService';
+import type { CartItem } from "@/types";
 const router = useRouter();
 const cart = ref<CartItem[]>([]);
 const showOrderSuccess = ref(false);
@@ -112,75 +99,76 @@ onMounted(loadCart);
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
-}
 
-.cart-content {
-  display: grid;
-  gap: 20px;
-}
+  .cart-content {
+    display: grid;
+    gap: 20px;
 
-.cart-items ul {
-  list-style: none;
-  padding: 0;
-}
+    .cart-items ul {
+      list-style: none;
+      padding: 0;
 
-.cart-item {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 20px;
-  border-bottom: 1px solid #eee;
-}
+      li.cart-item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        padding: 20px;
+        border-bottom: 1px solid #eee;
 
-.cart-item img {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-}
+        img {
+          width: 100px;
+          height: 100px;
+          object-fit: cover;
+        }
 
-.item-details {
-  flex-grow: 1;
-}
+        .item-details {
+          flex-grow: 1;
+        }
 
-.quantity-controls {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+        .quantity-controls {
+          display: flex;
+          align-items: center;
+          gap: 10px;
 
-.quantity-controls button {
-  padding: 5px 10px;
-  border: 1px solid #ddd;
-}
+          button {
+            padding: 5px 10px;
+            border: 1px solid #ddd;
+          }
 
-.item-total {
-  min-width: 100px;
-  text-align: right;
-}
+        }
 
-.remove-button {
-  color: red;
-}
+        .item-total {
+          min-width: 100px;
+          text-align: right;
+        }
 
-.cart-summary {
-  padding: 20px;
-  border: 1px solid #eee;
-}
+        .remove-button {
+          color: red;
+        }
+      }
 
-.total {
-  display: flex;
-  justify-content: space-between;
-  font-size: 1.2em;
-  margin-bottom: 20px;
-}
+      .cart-summary {
+        padding: 20px;
+        border: 1px solid #eee;
 
-.order-button {
-  width: 100%;
-  padding: 10px;
-  background: blue;
-  color: white;
-  border: none;
-  cursor: pointer;
+        .total {
+          display: flex;
+          justify-content: space-between;
+          font-size: 1.2em;
+          margin-bottom: 20px;
+        }
+
+        .order-button {
+          width: 100%;
+          padding: 10px;
+          background: blue;
+          color: white;
+          border: none;
+          cursor: pointer;
+        }
+      }
+    }
+  }
 }
 
 .empty-cart {
@@ -189,29 +177,33 @@ onMounted(loadCart);
 }
 
 .modal-overlay {
-  position: fixed;
-  inset: 0;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+
+  .modal {
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+
+    .continue-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: blue;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  }
+
 }
 
-.modal {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  text-align: center;
-}
 
-.continue-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background: blue;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
+
 
 @media (max-width: 768px) {
   .cart-item {

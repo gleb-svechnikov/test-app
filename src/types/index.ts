@@ -14,6 +14,7 @@
     description: string;
     imageUrl: string;
     categoryIds?: number[];
+    thumbnailUrl: string;
   }
 
   export type CartItem = {

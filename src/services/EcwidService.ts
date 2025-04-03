@@ -6,13 +6,9 @@ const API_CONFIG = {
   BASE_URL: 'https://app.ecwid.com/api/v3',
 } as const;
 
-// Type check for required environment variables
 if (!API_CONFIG.STORE_ID || !API_CONFIG.TOKEN) {
   throw new Error('Missing required environment variables for Ecwid API');
 }
-
-
-
 
 const createApiUrl = (endpoint: string) =>
   `${API_CONFIG.BASE_URL}/${API_CONFIG.STORE_ID}${endpoint}`;
@@ -117,7 +113,6 @@ export class EcwidService {
     }
   }
 
-  // Add new static cart methods
   private static getStorageKey() {
     return `ecwid_${API_CONFIG.STORE_ID}_cart`;
   }
@@ -199,9 +194,7 @@ export class EcwidService {
 }
 
 export const useEcwidApi = () => {
-  // ... existing API methods ...
 
-  // Add cart methods
   const getStoredCart = (): CartItem[] => {
     const cart = localStorage.getItem(`ecwid_${API_CONFIG.STORE_ID}_cart`);
     return cart ? JSON.parse(cart) : [];
@@ -257,7 +250,6 @@ export const useEcwidApi = () => {
   };
 
   return {
-    // ... existing methods ...
     getStoredCart,
     addToCart,
     removeFromCart,
