@@ -3,10 +3,12 @@
     <img :src="product.thumbnailUrl" :alt="product.name" loading="lazy" />
     <div class="description">
       <h3>{{ product.name }}</h3>
-      <p>${{ product.price.toFixed(2) }}</p>
-      <button type="button" @click="addToCart">
-        Add to Cart
-      </button>
+      <div class="action">
+        <span class="price">${{ product.price.toFixed(2) }}</span>
+        <button type="button" @click="addToCart">
+          Add to Cart
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -26,14 +28,31 @@ const addToCart = (event: any) => {
 <style scoped>
 .product-card {
   position: relative;
-
   img {
-    max-width: 267px;
+    max-width: var(--thumb-width);
+  }
+  .description{
+   
+    h3{
+      display: flex;
+    }
+    .action{
+      display: flex;
+      justify-content: space-between;
+      .price{
+        font-size: 1.25rem;
+      }
+      button{
+        font-size: 1.25rem;
+      }
+    }
+   
   }
 }
 
 @media (hover: hover) {
   .product-card {
+   
     .description {
       display: none;
       padding: 0.5rem 1rem;
@@ -41,18 +60,21 @@ const addToCart = (event: any) => {
     }
 
     &:hover {
-
+       background: var(--product-green);
       .description {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
         z-index: 1;
         width: 100%;
         transition: all 0.3s ease;
-        display: block;
         position: absolute;
-        bottom: 0;
+        bottom: 0.5rem;
         left: 0;
         right: 0;
-        background: Canvas;
+        background: rgba(225,225,225,0.9);
         transition: bottom 0.3s ease;
+        box-sizing: border-box;
       }
     }
   }

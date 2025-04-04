@@ -7,12 +7,8 @@
 }
 
 
-@media (min-width: 1024px) {
+@media (width < 1024px) {
   body {
     display: flex;
-  }
-  #app {
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
   }
 }

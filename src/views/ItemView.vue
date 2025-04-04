@@ -7,10 +7,13 @@
     <div class="description">
       <h1>{{ product.name }}</h1>
       <div v-html="product.description"></div>
-      <div class="price">Price : ${{ product.price.toFixed(2) }}</div>
-      <button @click="addToCart" class="">
-        Add to Cart
-      </button>
+      <div class="action">
+        <div class="price">Price : ${{ product.price.toFixed(2) }}</div>
+        <button @click="addToCart" type="button">
+          Add to Cart   <IconCart />
+        </button>
+      </div>
+     
     </div>
   </div>
   <div v-if="loading">
@@ -22,6 +25,7 @@
 </template>
 
 <script setup lang="ts">
+import IconCart from '@/components/icons/IconCart.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { EcwidService } from '@/services/EcwidService';
@@ -50,9 +54,7 @@ onMounted(fetchProduct);
 </script>
 
 <style>
-.price{
 
-}
 .item{
   padding: 1rem;
   display: flex;
@@ -63,14 +65,33 @@ onMounted(fetchProduct);
     }
   }
   .description{
-    max-width: 80ch;
+    max-width: var(--max-readable-text);
+    font-size: 1.25rem;
+    line-height: 1.8;
+    p{
+      margin: 1rem 0;
+    }
+    .action{
+      font-size: 2rem;
+      display: flex;
+      gap: var(--space-gap);
+      justify-content: space-between;
+      button{
+        font-size: 2rem;
+        svg{
+          padding: 0.5rem;
+        }
+      }
+    }
   }
 }
-@media (min-width: 1024px) {
-  .about {
-    min-height: 100vh;
+@media (width < 1024px) {
+  .item{
+    flex-direction: column;
     display: flex;
-    align-items: center;
+    img{
+      max-width: 100%;
+    }
   }
 }
 </style>

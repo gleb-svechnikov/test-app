@@ -26,12 +26,12 @@
 
 <style scoped>
 #vue-logo {
-  width: 60px; /* Adjust size as needed */
-  height: 60px; /* Adjust size as needed */
-  transition: transform 0.9s ease; /* Smooth transition for transform */
+  width: 60px;
+  height: 60px;
+  transition: transform 0.9s ease;
 }
 
 #vue-logo:hover {
-  transform: rotate(360deg); /* Rotate on hover */
+  transform: rotate(360deg);
 }
 </style>

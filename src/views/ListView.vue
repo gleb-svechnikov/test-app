@@ -69,40 +69,42 @@ onMounted(fetchData);
 <style>
 section {
   display: flex;
-  gap: 1rem;
+  gap: var(--space-gap);
 
   .categories {
-    min-width: 40ch;
+    min-width: var(--catergory-min-width);
+    h2{
+      margin-bottom: 2rem;
+      font-size: 2rem;
+    }
     ul {
       padding: 0;
       display: flex;
       flex-wrap: wrap;
       flex-direction: column;
-      gap: 1rem;
+      gap: var(--space-gap);
 
       li {
         list-style: none;
         padding: 0;
-        flex: 1 1 300px;
-        max-width: calc(33.333% - 1rem);
-        /* 3 items per row */
       }
     }
   }
 
   .products {
+    h2{
+      margin-bottom: 2rem;
+      font-size: 2rem;
+    }
     ul {
       padding: 0;
       display: flex;
       flex-wrap: wrap;
-      gap: 1rem;
+      gap: var(--space-gap);
 
       li {
         list-style: none;
         padding: 0;
-        flex: 1 1 300px;
-        max-width: calc(25% - 1rem);
-        /* 4 items per row */
       }
     }
   }
@@ -113,7 +115,7 @@ section {
 
   ul.categories-list li,
   ul.products-list li {
-    max-width: calc(50% - 1rem);
+    max-width: calc(50% - var(--space-gap));
   }
 }
 

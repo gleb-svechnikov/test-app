@@ -15,10 +15,6 @@
   </svg>
 </template>
 
-<script setup lang="ts">
-// No props or logic needed
-</script>
-
 <style scoped>
 .icon-cart {
   width: 1.5em;
