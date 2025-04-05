@@ -1,3 +1,4 @@
+import { ref, readonly } from 'vue';
 import type { CartItem, Product, Category } from "@/types";
 
 const API_CONFIG = {
@@ -17,6 +18,18 @@ const headers = {
   Authorization: `Bearer ${API_CONFIG.TOKEN}`,
   'Content-Type': 'application/json',
 };
+
+const _cartRef = ref<CartItem[]>([]);
+
+const _loadCartFromStorage = () => {
+  const key = `ecwid_${API_CONFIG.STORE_ID}_cart`;
+  const storedCart = localStorage.getItem(key);
+  _cartRef.value = storedCart ? JSON.parse(storedCart) : [];
+};
+
+_loadCartFromStorage();
+
+export const cartRef = readonly(_cartRef);
 
 export class EcwidService {
   static async getCategories(): Promise<Category[]> {
@@ -117,54 +130,59 @@ export class EcwidService {
     return `ecwid_${API_CONFIG.STORE_ID}_cart`;
   }
 
-  static getStoredCart(): CartItem[] {
-    const cart = localStorage.getItem(this.getStorageKey());
-    return cart ? JSON.parse(cart) : [];
+  static getCurrentCart(): CartItem[] {
+    return JSON.parse(JSON.stringify(_cartRef.value));
   }
 
   private static saveCart(cart: CartItem[]) {
+    _cartRef.value = cart;
     localStorage.setItem(this.getStorageKey(), JSON.stringify(cart));
   }
 
   static async addToCart(productId: number): Promise<CartItem[]> {
-    const cart = this.getStoredCart();
+    const cart = this.getCurrentCart();
     const existingItem = cart.find(item => item.product.id === productId);
 
     if (existingItem) {
       existingItem.quantity += 1;
     } else {
-      const product = await this.getProduct(productId);
-      cart.push({
-        id: Date.now(),
-        product,
-        quantity: 1
-      });
+      try {
+        const product = await this.getProduct(productId);
+        cart.push({
+          id: Date.now(),
+          product,
+          quantity: 1
+        });
+      } catch (error) {
+        console.error(`Failed to fetch product ${productId} to add to cart:`, error);
+        throw error;
+      }
     }
 
     this.saveCart(cart);
-    return cart;
+    return this.getCurrentCart();
   }
 
   static removeFromCart(itemId: number): CartItem[] {
-    const cart = this.getStoredCart();
+    let cart = this.getCurrentCart();
     const updatedCart = cart.filter(item => item.id !== itemId);
     this.saveCart(updatedCart);
-    return updatedCart;
+    return this.getCurrentCart();
   }
 
   static updateCartItemQuantity(itemId: number, quantity: number): CartItem[] {
-    const cart = this.getStoredCart();
+    let cart = this.getCurrentCart();
     const item = cart.find(item => item.id === itemId);
     if (item) {
       item.quantity = Math.max(1, quantity);
       this.saveCart(cart);
     }
-    return cart;
+    return this.getCurrentCart();
   }
 
   static clearCart(): CartItem[] {
-    localStorage.removeItem(this.getStorageKey());
-    return [];
+    this.saveCart([]);
+    return this.getCurrentCart();
   }
 
   static calculateCartTotal(cart: CartItem[]): number {
@@ -192,71 +210,5 @@ export class EcwidService {
     }
   }
 }
-
-export const useEcwidApi = () => {
-
-  const getStoredCart = (): CartItem[] => {
-    const cart = localStorage.getItem(`ecwid_${API_CONFIG.STORE_ID}_cart`);
-    return cart ? JSON.parse(cart) : [];
-  };
-
-  const saveCart = (cart: CartItem[]) => {
-    localStorage.setItem(`ecwid_${API_CONFIG.STORE_ID}_cart`, JSON.stringify(cart));
-  };
-
-  const addToCart = async (productId: number) => {
-    const cart = getStoredCart();
-    const existingItem = cart.find(item => item.product.id === productId);
-
-    if (existingItem) {
-      existingItem.quantity += 1;
-    } else {
-      const product = await EcwidService.getProduct(productId);
-      cart.push({
-        id: Date.now(),
-        product,
-        quantity: 1
-      });
-    }
-
-    saveCart(cart);
-    return cart;
-  };
-
-  const removeFromCart = (itemId: number) => {
-    const cart = getStoredCart();
-    const updatedCart = cart.filter(item => item.id !== itemId);
-    saveCart(updatedCart);
-    return updatedCart;
-  };
-
-  const updateCartItemQuantity = (itemId: number, quantity: number) => {
-    const cart = getStoredCart();
-    const item = cart.find(item => item.id === itemId);
-    if (item) {
-      item.quantity = Math.max(1, quantity);
-      saveCart(cart);
-    }
-    return cart;
-  };
-
-  const clearCart = () => {
-    localStorage.removeItem(`ecwid_${API_CONFIG.STORE_ID}_cart`);
-    return [];
-  };
-
-  const calculateCartTotal = (cart: CartItem[]) => {
-    return cart.reduce((total, item) => total + (item.product.price * item.quantity), 0);
-  };
-
-  return {
-    getStoredCart,
-    addToCart,
-    removeFromCart,
-    updateCartItemQuantity,
-    clearCart,
-    calculateCartTotal,
-  };
-};
 
 export type { Category, Product, CartItem };

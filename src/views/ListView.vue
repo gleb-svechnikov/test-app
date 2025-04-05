@@ -8,6 +8,7 @@
             <CategoryCard :category="category" />
           </RouterLink>
         </li>
+        
       </ul>
     </div>
   </section>
@@ -111,21 +112,29 @@ section {
 }
 
 
-@media (max-width: 768px) {
 
-  ul.categories-list li,
-  ul.products-list li {
-    max-width: calc(50% - var(--space-gap));
+@media (width < 1024px) {
+  .categories  {
+    margin: 0 1rem 3rem 1rem;
+    ul{
+     
+      flex-direction: row !important;
+      li{
+        display: inline-flex;
+        h3{
+          display: inline-flex;
+        } 
+       }
+    }
+   
   }
-}
-
-@media (width < 1224px) {
-  ul.products-list {
+  .products {
+    margin: 0 1rem;
     flex-direction: column;
-    margin: auto;
-
-    li {
-      max-width: unset;
+    ul{
+      li {
+        width: 100%;
+      }
     }
   }
 }

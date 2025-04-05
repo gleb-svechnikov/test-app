@@ -77,17 +77,17 @@ onMounted(fetchCategoryData);
 
 <style scoped>
 .category-view {
-    padding: 20px;
+    padding: 2rem;
 }
 
 .category-header {
-    margin-bottom: 30px;
+    margin-bottom: 3rem;
 }
 
 .category-header img {
     max-width: 100%;
     height: auto;
-    margin-top: 20px;
+    margin-top: 2rem;
 }
 
 .products-list {
@@ -98,11 +98,19 @@ onMounted(fetchCategoryData);
     list-style: none;
 
 }
-
-
-@media (max-width: 768px) {
-    .products-list li {
-        max-width: calc(50% - 10px);
+@media (width < 1024px){
+  .product-card {
+    text-align: center;
+    .description{
+      padding: 0rem 2rem 4rem 2rem;
+      font-size: 1.25rem;
+      text-underline-position: unset;
+      button{
+        padding: 1rem 2rem;
+      }
     }
+  }
 }
+
+
 </style>

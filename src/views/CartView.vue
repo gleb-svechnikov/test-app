@@ -13,7 +13,10 @@
                         />
 
                         <div class="item-details">
-                            <h3>{{ item.product.name }}</h3>
+                            <h3>
+                                <RouterLink :to="`/items/${item.product.id}`">
+                                    {{ item.product.name }}
+                                </RouterLink></h3>
                             <p>${{ item.product.price.toFixed(2) }}</p>
                         </div>
 
@@ -26,9 +29,7 @@
                                 min="1"
                             />
                             <button @click="updateQuantity(item.id, item.quantity + 1)"  type="button">+</button>
-                           
                         </div>
-
                         <div class="item-total">
                             ${{
                                 (item.product.price * item.quantity).toFixed(2)
@@ -66,7 +67,7 @@
             <div class="modal">
                 <h2>Order Placed Successfully!</h2>
                 <p>Thank you for your purchase.</p>
-                <button @click="closeOrderSuccess" class="continue-button">
+                <button @click="closeOrderSuccess" type="button" class="continue-button">
                     Continue Shopping
                 </button>
             </div>
@@ -86,7 +87,7 @@ const showOrderSuccess = ref(false);
 const cartTotal = computed(() => EcwidService.calculateCartTotal(cart.value));
 
 const loadCart = () => {
-    cart.value = EcwidService.getStoredCart();
+    cart.value = EcwidService.getCurrentCart();
 };
 
 const updateQuantity = (itemId: number, quantity: number) => {
@@ -112,13 +113,13 @@ onMounted(loadCart);
 
 <style scoped>
 .cart-container {
-    padding: 20px;
+    padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
 
     .cart-content {
         display: grid;
-        gap: 20px;
+        gap: 2rem;
 
         .cart-items ul {
             list-style: none;
@@ -127,8 +128,8 @@ onMounted(loadCart);
             li.cart-item {
                 display: flex;
                 align-items: center;
-                gap: 20px;
-                padding: 20px;
+                gap: 2rem;
+                padding: 2rem;
                 border-bottom: 1px solid #eee;
 
                 img {
@@ -182,6 +183,32 @@ onMounted(loadCart);
            }
        }
     }
+    dialog {
+        background: Canvas;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        top: 50%;
+        left: 50%;
+        transform: translateX(-50%) translateY(-50%);
+    
+        .modal {
+            padding: 2rem;
+            text-align: center;
+            h2{
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+            .continue-button {
+                margin-top: 20px;
+                padding: 1rem 2rem;
+                font-size: 1.5rem;
+                border: none;
+                cursor: pointer;
+            }
+        }
+     
+    }
 }
 
 .empty-cart {
@@ -189,39 +216,38 @@ onMounted(loadCart);
     padding: 40px;
 }
 
-.modal-overlay {
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    top: 50%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-50%);
 
-    .modal {
-        padding: 20px;
-        border-radius: 8px;
-        text-align: center;
 
-        .continue-button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            background: blue;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-    }
-}
-
-@media (max-width: 768px) {
+@media (width < 1024px) {
     .cart-item {
         flex-direction: column;
         align-items: flex-start;
+        text-align: center;
+        .item-total {
+            text-align: center !important;
+            font-size: 1.5rem;
+        }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            input[type='number'] {
+                font-size: 1.75rem;
+            }
+            button{
+                font-size: 1.25rem;
+                font-weight: bold;
+                padding: 0.5rem 2rem;
+            }
+            
+        }
+        .remove-button{
+            font-size: 1.5rem;
+        }
     }
-
-    .item-total {
-        text-align: left;
+    .modal-overlay{
+        width: 100%;
     }
+    
 }
 </style>

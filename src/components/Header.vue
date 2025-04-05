@@ -3,40 +3,25 @@
         <RouterLink to="/">
           <IconLogo/>
         </RouterLink>
-        <nav class="desktop-nav">
-          <RouterLink to="/">Products and categories</RouterLink>
-          <RouterLink to="/cart">
-           Shopping Cart <sup v-if="cart.length > 0">{{cart.length}}</sup>
-          </RouterLink>
-        </nav>
+        <Menu :cart="cartRef" class="desktop-nav" />
         <button class="burger-menu" popovertarget="mobile-nav" aria-label="Menu">
           <IconBurger/>
         </button>
         <div id="mobile-nav" popover="auto" class="mobile-nav">
-          <nav>
-            <RouterLink to="/" @click="closePopover">Products and categories</RouterLink>
-            <RouterLink to="/cart" @click="closePopover">
-             Shopping Cart <sup v-if="cart.length > 0">{{cart.length}}</sup>
-            </RouterLink>
-          </nav>
+          <Menu :cart="cartRef" :isMobile="true" @linkClick="closePopover" />
         </div>
       </header>
 </template>
 <script setup lang="ts">
 import IconLogo from '@/components/icons/IconLogo.vue';
 import IconBurger from '@/components/icons/IconBurger.vue';
-
+import Menu from '@/components/Menu.vue';
 import { RouterLink } from 'vue-router'
-
-import { EcwidService } from '@/services/EcwidService';
-import type { CartItem } from "@/types";
+import { EcwidService, cartRef } from '@/services/EcwidService';
 import { ref } from 'vue';
 
-const cart = ref<CartItem[]>([]);
-cart.value = EcwidService.getStoredCart();
-
 const closePopover = () => {
-  document.getElementById('mobile-nav')?.hidePopover();
+  document.getElementById('mobile-nav')?.hidePopover?.();
 };
 </script>
 
@@ -50,33 +35,8 @@ header {
   a{
     padding: 1rem;
   }
-  nav {
-    font-size: 1.5rem;
-    text-align: center;
-    display: flex;
-    gap: var(--space-gap);
-    a{
-      text-underline-position: under;
-      sup{
-        width: 2rem;
-        height: 2rem;
-        line-height: 1rem;
-        border-radius: 50%;
-        padding: 0rem;
-        font-size: 1rem;
-        text-align: center;
-      }
-      &.router-link-exact-active {
-        color: var(--color-text);
-        &:hover {
-          background-color: transparent;
-        }
-      }
-    }
-  }
 }
 
-/* Burger menu styling */
 .burger-menu {
   display: none;
   flex-direction: column;
@@ -96,9 +56,6 @@ header {
   }
 }
 
-
-
-/* Mobile navigation popover */
 .mobile-nav {
   width: 100%;
   top: 4rem;
@@ -107,13 +64,7 @@ header {
   padding: 1rem;
 }
 
-.mobile-nav nav {
-  flex-direction: column;
-  width: 100%;
-}
-
-/* Desktop/mobile visibility */
-@media (max-width: 768px) {
+@media (width < 1024px) {
   .desktop-nav {
     display: none;
   }
@@ -128,7 +79,6 @@ header {
     display: none;
   }
   
-  /* Hide the popover button on desktop */
   #mobile-nav[popover] {
     display: none;
   }

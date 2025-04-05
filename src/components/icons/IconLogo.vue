@@ -26,8 +26,8 @@
 
 <style scoped>
 #vue-logo {
-  width: 60px;
-  height: 60px;
+  width: 4rem;
+  height: 4rem;
   transition: transform 0.9s ease;
 }
 

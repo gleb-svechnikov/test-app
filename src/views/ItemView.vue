@@ -78,6 +78,7 @@ onMounted(fetchProduct);
       justify-content: space-between;
       button{
         font-size: 2rem;
+       
         svg{
           padding: 0.5rem;
         }
