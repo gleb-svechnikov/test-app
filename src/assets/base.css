@@ -15,6 +15,9 @@ button[type='button'] {
   cursor: pointer;
   padding: 0.25rem 1rem;
   color: var(--product-white);
+  &:active {
+    transform: scale(0.95);
+  }
 }
 button[type='reset'] {
   border: none;

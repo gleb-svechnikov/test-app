@@ -3,23 +3,24 @@
         <RouterLink to="/">
           <IconLogo/>
         </RouterLink>
-        <Menu :cart="cartRef" class="desktop-nav" />
+        <Menu :cart="safeRef" class="desktop-nav" />
         <button class="burger-menu" popovertarget="mobile-nav" aria-label="Menu">
           <IconBurger/>
         </button>
         <div id="mobile-nav" popover="auto" class="mobile-nav">
-          <Menu :cart="cartRef" :isMobile="true" @linkClick="closePopover" />
+          <Menu :cart="safeRef" :isMobile="true" @linkClick="closePopover" />
         </div>
       </header>
 </template>
 <script setup lang="ts">
+import { computed } from 'vue';
 import IconLogo from '@/components/icons/IconLogo.vue';
 import IconBurger from '@/components/icons/IconBurger.vue';
 import Menu from '@/components/Menu.vue';
 import { RouterLink } from 'vue-router'
-import { EcwidService, cartRef } from '@/services/EcwidService';
-import { ref } from 'vue';
+import { cartRef } from '@/services/EcwidService';
 
+const safeRef = computed(() => cartRef.value.map(item => ({...item, product: {...item.product, categoryIds: item.product.categoryIds ? [...item.product.categoryIds] : undefined}})))
 const closePopover = () => {
   document.getElementById('mobile-nav')?.hidePopover?.();
 };
@@ -68,7 +69,6 @@ header {
   .desktop-nav {
     display: none;
   }
-  
   .burger-menu {
     display: flex;
   }
@@ -78,7 +78,6 @@ header {
   .burger-menu {
     display: none;
   }
-  
   #mobile-nav[popover] {
     display: none;
   }

@@ -5,8 +5,8 @@
       <h3>{{ product.name }}</h3>
       <div class="action">
         <span class="price">${{ product.price.toFixed(2) }}</span>
-        <button type="button" @click="addToCart" :disabled="isInCart">
-          {{ isInCart ? 'Added' : 'Add to Cart' }}
+        <button type="button" @click="addToCart">
+          {{ isInCart ? 'Added' : 'Add to cart' }}
         </button>
       </div>
     </div>
@@ -54,6 +54,7 @@ const addToCart = (event: Event) => {
         font-size: 1.25rem;
       }
       button{
+        z-index: 1;
         white-space: nowrap;
         font-size: 1.25rem;
       }

@@ -117,13 +117,15 @@ section {
   .categories  {
     margin: 0 1rem 3rem 1rem;
     ul{
-     
       flex-direction: row !important;
       li{
         display: inline-flex;
         h3{
           display: inline-flex;
         } 
+        a{
+          text-decoration: none;
+        }
        }
     }
    
@@ -134,6 +136,9 @@ section {
     ul{
       li {
         width: 100%;
+        a{
+          text-decoration: none;
+        }
       }
     }
   }

@@ -8,18 +8,18 @@
       <h1>{{ product.name }}</h1>
       <div v-html="product.description"></div>
       <div class="action">
-        <div class="price">Price : ${{ product.price.toFixed(2) }}</div>
+        <div class="price">Price: ${{ product.price.toFixed(2) }}</div>
         <button @click="addToCart" type="button">
-          Add to Cart   <IconCart />
+          {{ isInCart ? 'Added' : 'Add to cart' }}
+             <IconCart />
         </button>
       </div>
-     
     </div>
   </div>
-  <div v-if="loading">
+  <div v-if="loading" class="item">
     <progress></progress>
   </div>
-  <div  v-if="product === null">
+  <div  v-if="product === null && !loading">
     Product not found
   </div>
 </template>
@@ -28,14 +28,17 @@
 import IconCart from '@/components/icons/IconCart.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { EcwidService } from '@/services/EcwidService';
+import { EcwidService, cartRef } from '@/services/EcwidService';
+import { computed } from 'vue';
 import type { Product } from "@/types";
 
 const route = useRoute();
 const product = ref<Product | null>(null);
 const loading = ref(true);
 const error = ref<Error | null>(null);
-
+const isInCart = computed(() => {
+  return cartRef.value.some(item => item.product.id === Number(route.params.id));
+});
 const fetchProduct = async () => {
   try {
     product.value = await EcwidService.getProduct(Number(route.params.id));

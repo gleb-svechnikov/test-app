@@ -60,7 +60,7 @@
 
         <div v-else class="empty-cart">
             <p>Your cart is empty</p>
-            <router-link to="/">Continue Shopping</router-link>
+            <router-link to="/">Continue shopping</router-link>
         </div>
 
         <dialog open v-if="showOrderSuccess" class="modal-overlay">
@@ -68,7 +68,7 @@
                 <h2>Order Placed Successfully!</h2>
                 <p>Thank you for your purchase.</p>
                 <button @click="closeOrderSuccess" type="button" class="continue-button">
-                    Continue Shopping
+                    Continue shopping
                 </button>
             </div>
         </dialog>
